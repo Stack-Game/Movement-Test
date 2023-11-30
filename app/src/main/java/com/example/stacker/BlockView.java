@@ -11,10 +11,10 @@ import android.view.View;
 
 
 public class BlockView extends View {
-    private static final int BLOCK_SIZE = 100;
-    private static final int NUM_BLOCKS = 3;
+    private static final int BLOCK_SIZE = 200;
+    private static final int NUM_BLOCKS = 1;
     private static final int BLOCK_GAP = 10; // Gap between blocks
-    private static final int DELAY_MILLIS = 50; // Delay between movements in milliseconds
+    private static final int DELAY_MILLIS = 100; // Delay between movements in milliseconds
 
 
     private Paint paint;
@@ -38,7 +38,13 @@ public class BlockView extends View {
 
 
     public void stopBlocks() {
-        blocksMoving = false;
+        if(blocksMoving){
+            blocksMoving = false;
+        } else {
+            blocksMoving = true;
+        }
+
+
     }
     private void init() {
         paint = new Paint();
