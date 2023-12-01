@@ -11,17 +11,29 @@ import android.view.View;
 
 
 public class BlockView extends View {
-    private static final int BLOCK_SIZE = 200;
-    private static final int NUM_BLOCKS = 1;
+    private static final int BLOCK_SIZE = 100;
+
+
+    private static final int NUM_BLOCKS = 3;
     private static final int BLOCK_GAP = 10; // Gap between blocks
     private static final int DELAY_MILLIS = 100; // Delay between movements in milliseconds
 
+    private static final int DELAY_BLOCK_MILLIS = 3000;
+
 
     private Paint paint;
+
+    private int score = 0;
     private int[] blockPositions;
+    private int stackUnit = 1;
     private int[] blockDirections = {1, 1, 1}; // Initial directions for each block (1 for right, -1 for left)
     private Handler handler;
     private boolean blocksMoving;
+
+    private boolean gameOver;
+
+    private boolean top;
+    private boolean missedBlock;
 
 
     public BlockView(Context context) {
@@ -32,20 +44,58 @@ public class BlockView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        stopBlocks();
+        pause();
         return super.onTouchEvent(event);
     }
 
+    // creates a new block
+    public void newBlocks(Canvas canvas){
+        // every 3 seconds, new blocks
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
 
-    public void stopBlocks() {
+                for (int i = 0; i < NUM_BLOCKS; i++) {
+                    canvas.drawRect(
+                            blockPositions[i],
+                            getHeight() - BLOCK_SIZE * stackUnit,
+                            blockPositions[i] + BLOCK_SIZE,
+                            getHeight(),
+                            paint
+                    );
+                }
+
+                // Trigger a redraw after each movement
+                invalidate();
+
+
+                // Schedule the next movement
+                stackUnit++;
+                newBlocks(canvas);
+            }
+            }, DELAY_BLOCK_MILLIS);
+        }
+
+
+    // keeps track of whether the game is over
+    public void gameStatus(){
+
+    }
+
+    // keeps track of the game score
+    public void keepScore(){
+
+    }
+
+
+    public void pause() {
         if(blocksMoving){
             blocksMoving = false;
         } else {
             blocksMoving = true;
         }
-
-
     }
+
     private void init() {
         paint = new Paint();
         paint.setColor(Color.RED);
@@ -61,6 +111,7 @@ public class BlockView extends View {
 
         // Start the movement when the view is initialized
         moveBlocks();
+        newBlocks(new Canvas());
     }
 
 
