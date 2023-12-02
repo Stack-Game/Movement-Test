@@ -1,39 +1,43 @@
 package com.example.stacker;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import java.util.Random;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.View;
+import java.util.ArrayList;
+import java.util.List;
+
 
 
 public class BlockView extends View {
     private static final int BLOCK_SIZE = 100;
-
-
     private static final int NUM_BLOCKS = 3;
-    private static final int BLOCK_GAP = 10; // Gap between blocks
-    private static final int DELAY_MILLIS = 100; // Delay between movements in milliseconds
-
-    private static final int DELAY_BLOCK_MILLIS = 3000;
+    private static final int BLOCK_GAP = 10;
+    private static final int DELAY_MILLIS = 50;
 
 
     private Paint paint;
+    private Paint textPaint;
 
-    private int score = 0;
-    private int[] blockPositions;
-    private int stackUnit = 1;
+    private Paint backgroundPaint;
+    private List<int[]> rows;
     private int[] blockDirections = {1, 1, 1}; // Initial directions for each block (1 for right, -1 for left)
     private Handler handler;
+
+    private String[] blockColors = {"#563635", "#78C091", "#81F0E5", "#5B6057", "#6E9075"};
+
+    private int randColor = new Random().nextInt(blockColors.length);
+
+
     private boolean blocksMoving;
+    private boolean reachedTop = false;
 
-    private boolean gameOver;
-
-    private boolean top;
-    private boolean missedBlock;
+    private int numRows = 0;
+    private int score = 0;
 
 
     public BlockView(Context context) {
@@ -44,74 +48,69 @@ public class BlockView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        pause();
+        if (event.getAction() == MotionEvent.ACTION_DOWN && !reachedTop) {
+            stopBlocks();
+            addNewRow();
+        }
+
+        if(numRows == 19){
+            stopBlocks();
+
+        }
         return super.onTouchEvent(event);
     }
 
-    // creates a new block
-    public void newBlocks(Canvas canvas){
-        // every 3 seconds, new blocks
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
 
-                for (int i = 0; i < NUM_BLOCKS; i++) {
-                    canvas.drawRect(
-                            blockPositions[i],
-                            getHeight() - BLOCK_SIZE * stackUnit,
-                            blockPositions[i] + BLOCK_SIZE,
-                            getHeight(),
-                            paint
-                    );
-                }
-
-                // Trigger a redraw after each movement
-                invalidate();
+    private void stopBlocks() {
+        blocksMoving = false;
+        handler.removeCallbacksAndMessages(null); // Remove any pending movements
+    }
 
 
-                // Schedule the next movement
-                stackUnit++;
-                newBlocks(canvas);
-            }
-            }, DELAY_BLOCK_MILLIS);
+    private void addNewRow() {
+        blocksMoving = true;
+        score++;
+
+        // Freeze the current row
+        int[] currentRow = rows.get(rows.size() - 1);
+        rows.add(currentRow.clone()); // Add a new row with the same positions
+        numRows++;
+        if(numRows == 19){
+            reachedTop = true;
         }
 
 
-    // keeps track of whether the game is over
-    public void gameStatus(){
 
+        // Trigger a redraw
+        invalidate();
+
+
+        // Schedule the next movement
+        moveBlocks();
     }
 
-    // keeps track of the game score
-    public void keepScore(){
-
-    }
-
-
-    public void pause() {
-        if(blocksMoving){
-            blocksMoving = false;
-        } else {
-            blocksMoving = true;
-        }
-    }
 
     private void init() {
         paint = new Paint();
-        paint.setColor(Color.RED);
-        blockPositions = new int[NUM_BLOCKS];
-        blocksMoving = true;
+        paint.setColor(Color.parseColor(blockColors[randColor]));
+
+        rows = new ArrayList<>();
         handler = new Handler(Looper.getMainLooper());
 
 
+        // Start with the initial row
+        int[] initialRow = new int[NUM_BLOCKS];
         for (int i = 0; i < NUM_BLOCKS; i++) {
-            blockPositions[i] = i * (BLOCK_SIZE + BLOCK_GAP);
+            initialRow[i] = i * (BLOCK_SIZE + BLOCK_GAP);
         }
+        rows.add(initialRow);
 
 
-        // Start the movement when the view is initialized
+        // Set initial direction for the blocks to move right
+        for (int i = 0; i < NUM_BLOCKS; i++) {
+            blockDirections[i] = 1;
+        }
         moveBlocks();
-        newBlocks(new Canvas());
     }
 
 
@@ -119,19 +118,36 @@ public class BlockView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        textPaint = new Paint();
+        backgroundPaint = new Paint();
+        backgroundPaint.setColor(Color.BLACK);
 
-        for (int i = 0; i < NUM_BLOCKS; i++) {
-            canvas.drawRect(
-                    blockPositions[i],
-                    getHeight() - BLOCK_SIZE,
-                    blockPositions[i] + BLOCK_SIZE,
-                    getHeight(),
-                    paint
-            );
+        canvas.drawRect(0, 0, getWidth(), getHeight(), backgroundPaint);
+
+        for (int[] row : rows) {
+            for (int i = 0; i < NUM_BLOCKS; i++) {
+
+                canvas.drawRect(
+                        row[i],
+                        getHeight() - BLOCK_SIZE - (BLOCK_SIZE + BLOCK_GAP) * (rows.indexOf(row)),
+                        row[i] + BLOCK_SIZE,
+                        getHeight() - (BLOCK_SIZE + BLOCK_GAP) * (rows.indexOf(row)),
+                        paint
+                );
+            }
         }
 
+        textPaint.setTextSize(60);
+        textPaint.setColor(Color.WHITE);
+        canvas.drawText("Score: " + score, canvas.getWidth()/20, canvas.getHeight()/20, textPaint);
 
-        invalidate(); // Redraw the view
+        if(reachedTop){
+            canvas.drawRect(0,0, getWidth(), getHeight(), paint);
+            textPaint.setColor(Color.BLACK);
+            textPaint.setTextSize(100);
+            canvas.drawText("Game Over", canvas.getWidth()/4, canvas.getHeight()/2, textPaint);
+            canvas.drawText("Score: " + score, canvas.getWidth()/4, 7 * canvas.getHeight()/12, textPaint);
+        }
     }
 
 
@@ -139,26 +155,22 @@ public class BlockView extends View {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Update block positions based on their individual directions
-                if (blocksMoving) {
-                    for (int i = 0; i < NUM_BLOCKS; i++) {
-                        blockPositions[i] += blockDirections[i] * (BLOCK_SIZE + BLOCK_GAP);
+                int[] currentRow = rows.get(rows.size() - 1);
+
+                for (int i = 0; i < NUM_BLOCKS; i++) {
+                    currentRow[i] += blockDirections[i] * (BLOCK_SIZE + BLOCK_GAP);
 
 
-                        // Check if the block reaches the screen edges and update direction individually
-                        if (blockPositions[i] >= getWidth() - BLOCK_SIZE || blockPositions[i] <= 0) {
-                            blockDirections[i] = -blockDirections[i];
-                        }
+                    if (currentRow[i] >= getWidth() - BLOCK_SIZE || currentRow[i] <= 0) {
+                        blockDirections[i] = -blockDirections[i];
+
+
                     }
                 }
-                // Trigger a redraw after each movement
+
                 invalidate();
-
-
-                // Schedule the next movement
                 moveBlocks();
             }
         }, DELAY_MILLIS);
     }
 }
-
