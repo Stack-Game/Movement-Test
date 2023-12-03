@@ -1,6 +1,8 @@
 package com.example.stacker;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -8,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.View;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +27,9 @@ public class BlockView extends View {
     private int[] blockDirections = {1, 1, 1}; // Initial directions for each block (1 for right, -1 for left)
     private Handler handler;
     private boolean blocksMoving;
+
+    private AlertDialog.Builder alertDialogBuilder;
+    private AlertDialog alertDialog;
 
     public BlockView(Context context) {
         super(context);
@@ -80,6 +86,11 @@ public class BlockView extends View {
                 newRow[i] = newRowList.get(i);
             }
 
+            //Condition Check: If no more blocks exist, call lost game method
+            if (newRowList.size() == 0) {
+                showGameOverLosePopup();
+            }
+
             // Replace the current row with the new row
             rows.set(rows.size() - 1, newRow);
 
@@ -126,7 +137,6 @@ public class BlockView extends View {
 
         for (int[] row : rows) {
             for (int i = 0; i < row.length; i++) {
-                // Ensure that the right side of the collision display is within the display bounds
                 int right = Math.min(row[i] + BLOCK_SIZE, getWidth());
                 canvas.drawRect(
                         row[i],
@@ -146,6 +156,7 @@ public class BlockView extends View {
                 int[] currentRow = rows.get(rows.size() - 1);
 
                 boolean changeDirection = false;
+                boolean reachedTop = false;
 
                 for (int i = 0; i < currentRow.length; i++) {
                     // Check if any block is about to go off the screen on the right
@@ -157,6 +168,18 @@ public class BlockView extends View {
                         changeDirection = true;
                         break;
                     }
+
+                    // Check if any block has reached or passed the top of the screen
+                    if (getHeight() - (BLOCK_SIZE + BLOCK_GAP) * (rows.indexOf(currentRow)) <= 0) {
+                        reachedTop = true;
+                        break;
+                    }
+                }
+
+                //Condition check, if the blocks reach top of display, show game win popup
+                if (reachedTop) {
+                    showGameOverWinPopup();
+                    return; // Exit the method to prevent further execution
                 }
 
                 if (changeDirection) {
@@ -176,8 +199,43 @@ public class BlockView extends View {
         }, (long) currentDelayMillis);
     }
 
+    private void showGameOverLosePopup() {
+        if (alertDialog == null || !alertDialog.isShowing()) {
+            alertDialogBuilder = new AlertDialog.Builder(getContext());
+            alertDialogBuilder.setMessage("You lose!");
+            alertDialogBuilder.setPositiveButton("Restart", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Restart the game or perform any other action
+                    resetGame();
+                }
+            });
 
+            alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
+    }
+    private void showGameOverWinPopup() {
+        if (alertDialog == null || !alertDialog.isShowing()) {
+            alertDialogBuilder = new AlertDialog.Builder(getContext());
+            alertDialogBuilder.setMessage("You Win!");
+            alertDialogBuilder.setPositiveButton("Restart", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Restart the game or perform any other action
+                    resetGame();
+                }
+            });
 
-
-
+            alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
+    }
+    private void resetGame() {
+        // Reset game state, clear rows, reset speed, etc.
+        rows.clear();
+        currentDelayMillis = INITIAL_DELAY_MILLIS;
+        init();
+        invalidate();
+    }
 }
