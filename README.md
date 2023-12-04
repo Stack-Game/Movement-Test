@@ -1,5 +1,6 @@
 
-<img width="301" alt="Screen Shot 2023-12-04 at 6 48 43 PM" src="https://github.com/Stack-Game/Movement-Test/assets/60993255/08d6ce98-c7cd-424d-8b3b-53c9bfeae4d3">
+
+<img width="114" alt="logo" src="https://github.com/Stack-Game/Movement-Test/assets/60993255/1786f3ed-3a92-4ad7-ada9-d4531e391a99">
 
 
 *Try and stack the blocks all the way to the top.*
@@ -15,7 +16,7 @@ as much as possible.
 Choose a difficulty level from one of the three options (easy, medium, or hard) \
 and then a screen will appear with three moving blocks at the bottom. \
 
-<img width="254" alt="start" src="https://github.com/Stack-Game/Movement-Test/assets/60993255/24560896-a393-4900-8a83-553cef5f7d6c">
+<img width="301" alt="Screen Shot 2023-12-04 at 6 48 43 PM" src="https://github.com/Stack-Game/Movement-Test/assets/60993255/08d6ce98-c7cd-424d-8b3b-53c9bfeae4d3">
 
 
 Touch the screen to freeze the current row of blocks in place and a new set will start \
