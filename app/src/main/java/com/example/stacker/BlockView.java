@@ -16,6 +16,7 @@ import android.content.Intent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class BlockView extends View {
     private static final int BLOCK_SIZE = 170;
@@ -28,11 +29,10 @@ public class BlockView extends View {
     private List<int[]> rows;
     private int[] blockDirections = {1, 1, 1}; // Initial directions for each block (1 for right, -1 for left)
     private Handler handler;
-    private boolean blocksMoving;
-    private AlertDialog.Builder alertDialogBuilder;
-    private AlertDialog alertDialog;
-
-
+    private String[] blockColors = {"#563635", "#78C091", "#81F0E5", "#5B6057", "#6E9075"};
+    private int randColor = new Random().nextInt(blockColors.length);
+    private Paint textPaint;
+    private Paint backgroundPaint;
     public void setDifficulty(String difficulty) {
         switch (difficulty) {
             case "Easy":
@@ -66,12 +66,10 @@ public class BlockView extends View {
     }
 
     private void stopBlocks() {
-        blocksMoving = false;
         handler.removeCallbacksAndMessages(null); // Remove any pending movements
     }
 
     private void addNewRow() {
-        blocksMoving = true;
 
         // Freeze the current row
         if (!rows.isEmpty()) {
@@ -131,7 +129,7 @@ public class BlockView extends View {
 
     private void init() {
         paint = new Paint();
-        paint.setColor(Color.RED);
+        paint.setColor(Color.parseColor(blockColors[randColor]));
         rows = new ArrayList<>();
         handler = new Handler(Looper.getMainLooper());
 
@@ -154,6 +152,12 @@ public class BlockView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        textPaint = new Paint();
+        backgroundPaint = new Paint();
+        backgroundPaint.setColor(Color.BLACK);
+
+        canvas.drawRect(0, 0, getWidth(), getHeight(), backgroundPaint);
+
         for (int[] row : rows) {
             for (int i = 0; i < row.length; i++) {
                 int right = Math.min(row[i] + BLOCK_SIZE, getWidth());
@@ -167,6 +171,7 @@ public class BlockView extends View {
             }
         }
     }
+
 
     private void moveBlocks() {
         handler.postDelayed(new Runnable() {
