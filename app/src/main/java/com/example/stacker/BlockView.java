@@ -10,10 +10,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.View;
+import android.content.Intent;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class BlockView extends View {
     private static final int BLOCK_SIZE = 170;
@@ -21,15 +24,31 @@ public class BlockView extends View {
     private static final int BLOCK_GAP = 10;
     private static final double INITIAL_DELAY_MILLIS = 500.0; // Initial delay
     private double currentDelayMillis = INITIAL_DELAY_MILLIS; // Current delay
-    private double accelerationFactor = 1.2; // Factor to increase speed
+    private double accelerationFactor = 1; // Factor to increase speed
     private Paint paint;
     private List<int[]> rows;
     private int[] blockDirections = {1, 1, 1}; // Initial directions for each block (1 for right, -1 for left)
     private Handler handler;
-    private boolean blocksMoving;
-
-    private AlertDialog.Builder alertDialogBuilder;
-    private AlertDialog alertDialog;
+    private String[] blockColors = {"#563635", "#78C091", "#81F0E5", "#5B6057", "#6E9075"};
+    private int randColor = new Random().nextInt(blockColors.length);
+    private Paint textPaint;
+    private Paint backgroundPaint;
+    public void setDifficulty(String difficulty) {
+        switch (difficulty) {
+            case "Easy":
+                this.accelerationFactor = 1.1; // Easy difficulty
+                break;
+            case "Medium":
+                this.accelerationFactor = 1.2; // Medium difficulty
+                break;
+            case "Hard":
+                this.accelerationFactor = 1.3; // Hard difficulty
+                break;
+            default:
+                this.accelerationFactor = 1.0; // Default to Easy if there's an error
+                break;
+        }
+    }
 
     public BlockView(Context context) {
         super(context);
@@ -47,12 +66,10 @@ public class BlockView extends View {
     }
 
     private void stopBlocks() {
-        blocksMoving = false;
         handler.removeCallbacksAndMessages(null); // Remove any pending movements
     }
 
     private void addNewRow() {
-        blocksMoving = true;
 
         // Freeze the current row
         if (!rows.isEmpty()) {
@@ -112,7 +129,7 @@ public class BlockView extends View {
 
     private void init() {
         paint = new Paint();
-        paint.setColor(Color.RED);
+        paint.setColor(Color.parseColor(blockColors[randColor]));
         rows = new ArrayList<>();
         handler = new Handler(Looper.getMainLooper());
 
@@ -135,6 +152,12 @@ public class BlockView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        textPaint = new Paint();
+        backgroundPaint = new Paint();
+        backgroundPaint.setColor(Color.BLACK);
+
+        canvas.drawRect(0, 0, getWidth(), getHeight(), backgroundPaint);
+
         for (int[] row : rows) {
             for (int i = 0; i < row.length; i++) {
                 int right = Math.min(row[i] + BLOCK_SIZE, getWidth());
@@ -148,6 +171,7 @@ public class BlockView extends View {
             }
         }
     }
+
 
     private void moveBlocks() {
         handler.postDelayed(new Runnable() {
@@ -200,36 +224,14 @@ public class BlockView extends View {
     }
 
     private void showGameOverLosePopup() {
-        if (alertDialog == null || !alertDialog.isShowing()) {
-            alertDialogBuilder = new AlertDialog.Builder(getContext());
-            alertDialogBuilder.setMessage("You lose!");
-            alertDialogBuilder.setPositiveButton("Restart", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // Restart the game or perform any other action
-                    resetGame();
-                }
-            });
-
-            alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
-        }
+        // Intent to navigate to the Game Over screen
+        Intent intent = new Intent(getContext(), GameOverActivity.class);
+        getContext().startActivity(intent);
     }
     private void showGameOverWinPopup() {
-        if (alertDialog == null || !alertDialog.isShowing()) {
-            alertDialogBuilder = new AlertDialog.Builder(getContext());
-            alertDialogBuilder.setMessage("You Win!");
-            alertDialogBuilder.setPositiveButton("Restart", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // Restart the game or perform any other action
-                    resetGame();
-                }
-            });
-
-            alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
-        }
+        // Intent to navigate to the You Win screen
+        Intent intent = new Intent(getContext(), YouWin.class);
+        getContext().startActivity(intent);
     }
     private void resetGame() {
         // Reset game state, clear rows, reset speed, etc.
