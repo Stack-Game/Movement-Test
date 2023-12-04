@@ -1,8 +1,6 @@
 package com.example.stacker;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -24,10 +22,10 @@ public class BlockView extends View {
     private static final int BLOCK_GAP = 10;
     private static final double INITIAL_DELAY_MILLIS = 500.0; // Initial delay
     private double currentDelayMillis = INITIAL_DELAY_MILLIS; // Current delay
-    private double accelerationFactor = 1; // Factor to increase speed
+    private double accelerationFactor = 1; // Factor for increasing speed
     private Paint paint;
     private List<int[]> rows;
-    private int[] blockDirections = {1, 1, 1}; // Initial directions for each block (1 for right, -1 for left)
+    private int[] blockDirections = {1, 1, 1}; // Initial directions for blocks (1 = right, -1 = left)
     private Handler handler;
     private String[] blockColors = {"#563635", "#78C091", "#81F0E5", "#5B6057", "#6E9075"};
     private int randColor = new Random().nextInt(blockColors.length);
@@ -66,7 +64,7 @@ public class BlockView extends View {
     }
 
     private void stopBlocks() {
-        handler.removeCallbacksAndMessages(null); // Remove any pending movements
+        handler.removeCallbacksAndMessages(null); // Remove movements pending
     }
 
     private void addNewRow() {
@@ -76,11 +74,12 @@ public class BlockView extends View {
             int[] currentRow = rows.get(rows.size() - 1);
             List<Integer> newRowList = new ArrayList<>();
 
-            // If there's more than one row, check the row beneath
+            // If theres more than one row, check the row beneath
             if (rows.size() > 1) {
                 int[] previousRow = rows.get(rows.size() - 2);
 
                 for (int i = 0; i < currentRow.length; i++) {
+
                     // Check if there's a block directly underneath in the previous row
                     for (int j = 0; j < previousRow.length; j++) {
                         if (currentRow[i] == previousRow[j]) {
@@ -91,13 +90,13 @@ public class BlockView extends View {
                 }
 
             } else {
-                // If it's the first row, just clone it
+                // Clone row if it's the first row
                 for (int i = 0; i < NUM_BLOCKS; i++) {
                     newRowList.add(currentRow[i]);
                 }
             }
 
-            // Convert the list of blocks in the new row to an array
+            // Convert the blocks in new row into array
             int[] newRow = new int[newRowList.size()];
             for (int i = 0; i < newRowList.size(); i++) {
                 newRow[i] = newRowList.get(i);
@@ -108,16 +107,16 @@ public class BlockView extends View {
                 showGameOverLosePopup();
             }
 
-            // Replace the current row with the new row
+            // Replace current row with new row
             rows.set(rows.size() - 1, newRow);
 
-            // Add a new row for the next round
+            // Adds new row
             rows.add(Arrays.copyOf(newRow, newRow.length));
 
-            // Trigger a redraw
+            // Redraw
             invalidate();
 
-            // Schedule the next movement
+            // Initiates Movement
             moveBlocks();
         }
     }
@@ -133,14 +132,14 @@ public class BlockView extends View {
         rows = new ArrayList<>();
         handler = new Handler(Looper.getMainLooper());
 
-        // Start with the initial row
+        // Creates Initial Row
         int[] initialRow = new int[NUM_BLOCKS];
         for (int i = 0; i < NUM_BLOCKS; i++) {
             initialRow[i] = i * (BLOCK_SIZE + BLOCK_GAP);
         }
         rows.add(initialRow);
 
-        // Set initial direction for the blocks to move right
+        // Sets Initial Direction
         for (int i = 0; i < NUM_BLOCKS; i++) {
             blockDirections[i] = 1;
         }
@@ -183,17 +182,18 @@ public class BlockView extends View {
                 boolean reachedTop = false;
 
                 for (int i = 0; i < currentRow.length; i++) {
-                    // Check if any block is about to go off the screen on the right
+                    // Checks for Off-Screen Blocks (Right Side)
                     if (currentRow[i] + blockDirections[i] * (BLOCK_SIZE + BLOCK_GAP) >= getWidth() - BLOCK_SIZE) {
                         changeDirection = true;
                         break;
+
                     } else if (currentRow[i] + blockDirections[i] * (BLOCK_SIZE + BLOCK_GAP) < 0) {
-                        // Check if any block is about to go off the screen on the left
+                        // Checks for Off-Screen Blocks (Left Side)
                         changeDirection = true;
                         break;
                     }
 
-                    // Check if any block has reached or passed the top of the screen
+                    // Checks If Blocks Reached Top Of Display
                     if (getHeight() - (BLOCK_SIZE + BLOCK_GAP) * (rows.indexOf(currentRow)) <= 0) {
                         reachedTop = true;
                         break;
@@ -203,12 +203,12 @@ public class BlockView extends View {
                 //Condition check, if the blocks reach top of display, show game win popup
                 if (reachedTop) {
                     showGameOverWinPopup();
-                    return; // Exit the method to prevent further execution
+                    return;
                 }
 
                 if (changeDirection) {
                     for (int i = 0; i < blockDirections.length; i++) {
-                        // Change direction for all blocks
+                        // Changes Direction Of All Blocks
                         blockDirections[i] = -blockDirections[i];
                     }
                 }
@@ -232,12 +232,5 @@ public class BlockView extends View {
         // Intent to navigate to the You Win screen
         Intent intent = new Intent(getContext(), YouWin.class);
         getContext().startActivity(intent);
-    }
-    private void resetGame() {
-        // Reset game state, clear rows, reset speed, etc.
-        rows.clear();
-        currentDelayMillis = INITIAL_DELAY_MILLIS;
-        init();
-        invalidate();
     }
 }

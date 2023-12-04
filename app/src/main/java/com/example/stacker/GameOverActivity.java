@@ -18,6 +18,6 @@ public class GameOverActivity extends Activity {
         // Intent to navigate to the menu screen
         Intent intent = new Intent(this, ModuleActivity.class);
         startActivity(intent);
-        finish(); // Close the GameOverActivity
+        finish(); // Close GameOverActivity
     }
 }

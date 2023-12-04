@@ -8,11 +8,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Get the difficulty level from the intent
+        // Get the difficulty level
         String difficulty = getIntent().getStringExtra("difficulty");
         BlockView blockView = new BlockView(this);
 
-        // Set the difficulty based on the passed intent extra
+        // Set the difficulty from passed intent
         if (difficulty != null) {
             blockView.setDifficulty(difficulty);
         }
