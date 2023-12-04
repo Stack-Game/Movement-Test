@@ -12,7 +12,12 @@ public class GameOverActivity extends Activity {
         setContentView(R.layout.exit_screen);
     }
 
-
+    public void restartGame(View view) {
+        // Intent to restart the game
+        Intent intent = new Intent(this, MainActivity.class); // Replace GameActivity with your game's main activity
+        startActivity(intent);
+        finish(); // Close the GameOverActivity
+    }
 
     public void goToMenu(View view) {
         // Intent to navigate to the menu screen
