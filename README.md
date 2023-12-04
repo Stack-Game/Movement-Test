@@ -42,7 +42,7 @@ the top of the screen, a congratulatory message will be displayed.
 
 <img width="249" alt="max-stack" src="https://github.com/Stack-Game/Movement-Test/assets/60993255/4632e998-5395-4ba0-b839-416d17721c18">
 
-/
+
 
 
 <img width="255" alt="win" src="https://github.com/Stack-Game/Movement-Test/assets/60993255/5e40572e-1b08-47e9-8467-fd30fbe60280">
