@@ -12,7 +12,7 @@
 TopStack is a mobile game for Android, where the goal is to align sets of blocks \
 as much as possible.
 
-![Watch a demo here:] (https://www.youtube.com/watch?v=mfwKBx8aTzQ)
+(Watch a demo here:)
 
 # Usage 
 
