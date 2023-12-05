@@ -1,6 +1,7 @@
 
 
-<img width="114" alt="logo" src="https://github.com/Stack-Game/Movement-Test/assets/60993255/1786f3ed-3a92-4ad7-ada9-d4531e391a99">
+![Screenshot 2023-12-04 193344](https://github.com/Stack-Game/Movement-Test/assets/60993255/26469b60-94df-4b44-b926-baf008c47144)
+
 
 
 *Try and stack the blocks all the way to the top.*
