@@ -8,10 +8,12 @@
 
 # Introduction
 
-Stack is a mobile game for Android, where the goal is to align sets of blocks \
+TopStack is a mobile game for Android, where the goal is to align sets of blocks \
 as much as possible.
 
 # Usage 
+
+(No External Libraries Required)
 
 Choose a difficulty level from one of the three options (easy, medium, or hard) \
 and then a screen will appear with three moving blocks at the bottom. \
@@ -50,7 +52,7 @@ the top of the screen, a congratulatory message will be displayed.
 <img width="255" alt="win" src="https://github.com/Stack-Game/Movement-Test/assets/60993255/5e40572e-1b08-47e9-8467-fd30fbe60280">
 
 
-Regardless of outcome, the user will then be taken back to the start screen and can play again.
+The user will then be taken back to the start screen and can play again.
 
 # Contributors
 
