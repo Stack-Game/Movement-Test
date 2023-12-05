@@ -24,13 +24,7 @@ and then a screen will appear with three moving blocks at the bottom. \
 Touch the screen to freeze the current row of blocks in place and a new set will start \
 moving above the previous row. 
 
-<img width="248" alt="beginning-of-game" src="https://github.com/Stack-Game/Movement-Test/assets/60993255/06c44bbe-7a77-4328-a823-abe93711ba15">
 
-
-The game will continue as long as the newest set of blocks \
-to freeze has at least one block above the previous row. \
-If the user fails to align the current row of blocks above any of the \
-previous row, the game will end and a "game over" message will be displayed. \
 
 <img width="250" alt="game-over" src="https://github.com/Stack-Game/Movement-Test/assets/60993255/d37facf0-abaa-4252-979e-829fb4b155bb">
 
@@ -40,6 +34,12 @@ align the next row.
 
 <img width="253" alt="middle-of-game" src="https://github.com/Stack-Game/Movement-Test/assets/60993255/cda1102d-90c5-4c9b-8677-b1567303aa21">
 
+The game will continue as long as the newest set of blocks \
+to freeze has at least one block above the previous row. \
+If the user fails to align the current row of blocks above any of the \
+previous row, the game will end and a "game over" message will be displayed. \
+
+<img width="248" alt="beginning-of-game" src="https://github.com/Stack-Game/Movement-Test/assets/60993255/06c44bbe-7a77-4328-a823-abe93711ba15">
 
 The blocks will continue to speed up. If the user continues to stack blocks such that they reach\
 the top of the screen, a congratulatory message will be displayed.
