@@ -16,7 +16,7 @@ as much as possible.
 (No External Libraries Required)
 
 Choose a difficulty level from one of the three options (easy, medium, or hard) \
-and then a screen will appear with three moving blocks at the bottom. \
+and then a screen will appear with three moving blocks at the bottom. 
 
 <img width="301" alt="Screen Shot 2023-12-04 at 6 48 43 PM" src="https://github.com/Stack-Game/Movement-Test/assets/60993255/08d6ce98-c7cd-424d-8b3b-53c9bfeae4d3">
 
@@ -37,7 +37,7 @@ align the next row.
 The game will continue as long as the newest set of blocks \
 to freeze has at least one block above the previous row. \
 If the user fails to align the current row of blocks above any of the \
-previous row, the game will end and a "game over" message will be displayed. \
+previous row, the game will end and a "game over" message will be displayed. 
 
 <img width="248" alt="beginning-of-game" src="https://github.com/Stack-Game/Movement-Test/assets/60993255/06c44bbe-7a77-4328-a823-abe93711ba15">
 
