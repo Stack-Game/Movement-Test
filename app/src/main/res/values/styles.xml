@@ -9,22 +9,14 @@
         <item name="android:windowBackground">@color/white</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/purple_700</item>
-        <!-- Customize your theme here. -->
+
     </style>
 
-    <!-- Theme for activities without an action bar. -->
     <style name="Theme.Stacker.NoActionBar">
-        <!-- Inherits from Theme.Stacker which already has NoActionBar -->
+
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <!-- Other items to customize for this theme can go here -->
-    </style>
 
-    <!-- As your app is not using Material3 themes, this can be removed or updated to AppCompat as well. -->
-    <!-- If you decide to keep this, make sure to change the parent to an AppCompat theme. -->
-    <!-- <style name="Base.Theme.Stacker" parent="Theme.AppCompat">
-        <item name="colorPrimary">@color/my_dark_primary</item>
-        <- Customize your dark theme here.-->
-    <!-- </style> -->
+    </style>
 
 </resources>
